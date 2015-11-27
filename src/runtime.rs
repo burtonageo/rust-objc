@@ -136,6 +136,16 @@ extern {
     pub fn objc_msg_lookup_super(sup: *const Super, sel: Sel) -> Imp;
 }
 
+#[cfg(feature="gnustep")]
+pub unsafe fn object_getClass(obj: *const Object) -> *const Class {
+    // This is defined as an inline function, so reproduce it here
+    if !obj.is_null() {
+        *(obj as *const *const Class)
+    } else {
+        ptr::null()
+    }
+}
+
 impl Sel {
     /// Registers a method with the Objective-C runtime system,
     /// maps the method name to a selector, and returns the selector value.
