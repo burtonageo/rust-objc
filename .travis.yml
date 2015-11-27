@@ -13,18 +13,11 @@ matrix:
     - os: linux
       env: FEATURES="exception"
 sudo: false
-install: >
-  if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-    export FEATURES="gnustep $FEATURES";
-    export CC="clang";
-    export CXX="clang++";
-    . gnustep_install.sh;
-  fi
+before_script: if [ "$TRAVIS_OS_NAME" = "linux" ]; then export FEATURES="gnustep $FEATURES"; fi
 script:
   - cargo build --verbose --features "$FEATURES"
   - cargo test --verbose --features "$FEATURES"
 addons:
   apt:
     packages:
-      - clang-3.7
-      - cmake
+      - gnustep-devel
