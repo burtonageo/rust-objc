@@ -11,13 +11,13 @@ unsafe impl Message for Object { }
 
 unsafe impl Message for Class { }
 
-#[cfg(target_arch = "x86")]
+#[cfg(all(target_arch = "x86", not(feature = "gnustep")))]
 #[path = "x86.rs"]
 mod platform;
-#[cfg(target_arch = "x86_64")]
+#[cfg(all(target_arch = "x86_64", not(feature = "gnustep")))]
 #[path = "x86_64.rs"]
 mod platform;
-#[cfg(target_arch = "arm")]
+#[cfg(all(target_arch = "arm", not(feature = "gnustep")))]
 #[path = "arm.rs"]
 mod platform;
 #[cfg(all(target_arch = "aarch64", not(feature = "gnustep")))]

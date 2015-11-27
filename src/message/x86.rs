@@ -23,7 +23,6 @@ pub fn msg_send_fn<R: Any>(obj: *mut Object, _: Sel) -> (Imp, *mut Object) {
     (msg_fn, obj)
 }
 
-#[cfg(not(feature = "gnustep"))]
 pub fn msg_send_super_fn<R: Any>(sup: &Super, _: Sel) -> (Imp, *mut Object) {
     let size = mem::size_of::<R>();
     let msg_fn = if size == 0 || size == 1 || size == 2 || size == 4 || size == 8 {
