@@ -1,10 +1,7 @@
-use std::fmt;
-use std::mem;
-use std::ops::Deref;
-use std::ptr::NonNull;
+use std::{fmt, mem, ops::Deref, ptr::NonNull};
 
-use crate::runtime::{Object, self};
 use super::WeakPtr;
+use crate::runtime::{self, Object};
 
 /// A pointer that strongly references an object, ensuring it won't be deallocated.
 ///
@@ -20,16 +17,17 @@ impl StrongPtr {
     /// +1 retain count. This will not retain the object.
     /// When dropped, the object will be released.
     /// Unsafe because the caller must ensure the given object pointer is valid.
-    pub unsafe fn new(ptr: *mut Object) -> Self {
-        StrongPtr(NonNull::new(ptr).expect("`StrongPtr` was passed a `nil` pointer in constructor"))
+    /// If `obj` is `null`, then this function returns `None`.
+    pub unsafe fn new(ptr: *mut Object) -> Option<Self> {
+        NonNull::new(ptr).map(StrongPtr)
     }
 
     /// Retains the given object and constructs a `StrongPtr` to it.
     /// When dropped, the object will be released.
     /// Unsafe because the caller must ensure the given object pointer is valid.
-    pub unsafe fn retain(ptr: *mut Object) -> Self {
-        let ptr = runtime::objc_retain(ptr);
-        StrongPtr::new(ptr)
+    /// If `obj` is `null`, then this function returns `None`.
+    pub unsafe fn retain(ptr: *mut Object) -> Option<Self> {
+        StrongPtr::new(runtime::objc_retain(ptr))
     }
 
     /// Autoreleases self, meaning that the object is not immediately released,
@@ -46,7 +44,10 @@ impl StrongPtr {
 
     /// Returns a `WeakPtr` to self.
     pub fn weak(&self) -> WeakPtr {
-        unsafe { WeakPtr::new(self.0) }
+        unsafe {
+            WeakPtr::new(self.0.as_ptr())
+                .expect("StrongPtr::weak contained an unexpected `null` pointer")
+        }
     }
 }
 
@@ -60,9 +61,7 @@ impl Drop for StrongPtr {
 
 impl Clone for StrongPtr {
     fn clone(&self) -> StrongPtr {
-        unsafe {
-            StrongPtr::retain(self.0.as_ptr())
-        }
+        unsafe { StrongPtr::retain(self.0.as_ptr()) }
     }
 }
 
