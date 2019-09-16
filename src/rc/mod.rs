@@ -22,6 +22,7 @@ For more information on Objective-C's reference counting, see Apple's documentat
 // StrongPtr will release the object when dropped
 let obj = unsafe {
     StrongPtr::new(msg_send![class!(NSObject), new])
+        .expect("Constructor unexpectedly failed")
 };
 
 // Cloning retains the object an additional time
@@ -35,7 +36,7 @@ autoreleasepool(|| {
 // Weak references won't retain the object
 let weak = obj.weak();
 drop(obj);
-assert!(weak.load().is_null());
+assert!(weak.load().is_none());
 # }
 ```
 */
