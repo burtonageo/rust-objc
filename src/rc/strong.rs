@@ -7,7 +7,7 @@ use crate::runtime::{self, Object};
 ///
 /// # Notes
 ///
-/// The `StrongPtr` is guaranteed to not be `nil`. Therefore, `Option<StrontPtr>` will
+/// The `StrongPtr` is guaranteed to not be `nil`. Therefore, `Option<StrongPtr>` will
 /// have the same size as `StrongPtr`.
 #[repr(transparent)]
 pub struct StrongPtr(NonNull<Object>);
