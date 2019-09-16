@@ -66,6 +66,12 @@ impl Deref for StrongPtr {
     }
 }
 
+impl fmt::Debug for StrongPtr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("StrongPtr").field(&self.0.get())
+    }
+}
+
 impl fmt::Pointer for StrongPtr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Pointer::fmt(&self.0, f)

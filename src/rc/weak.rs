@@ -1,5 +1,6 @@
 use std::cell::UnsafeCell;
 use std::ptr;
+use std::fmt;
 
 use crate::runtime::{Object, self};
 use super::StrongPtr;
@@ -46,5 +47,17 @@ impl Clone for WeakPtr {
             runtime::objc_copyWeak(ptr.get(), self.0.get());
         }
         WeakPtr(ptr)
+    }
+}
+
+impl fmt::Debug for WeakPtr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("WeakPtr").field(&self.0.get())
+    }
+}
+
+impl fmt::Pointer for WeakPtr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Pointer::fmt(&self.0.get())
     }
 }
