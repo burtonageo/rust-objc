@@ -9,6 +9,8 @@ use crate::runtime::{self, Object};
 ///
 /// The `StrongPtr` is guaranteed to not be `nil`. Therefore, `Option<StrongPtr>` will
 /// have the same size as `StrongPtr`.
+/// `Option<StrongPtr>` and `*mut Object` are abi compatible, which means that `Option<StrongPtr>`
+/// can be used in `extern fn` signatures.
 #[repr(transparent)]
 pub struct StrongPtr(NonNull<Object>);
 
