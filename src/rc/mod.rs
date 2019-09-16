@@ -62,7 +62,7 @@ mod tests {
         }
 
         let obj = unsafe {
-            StrongPtr::new(msg_send![class!(NSObject), new])
+            StrongPtr::new(msg_send![class!(NSObject), new]).unwrap()
         };
         assert!(retain_count(*obj) == 1);
 
@@ -77,11 +77,11 @@ mod tests {
     #[test]
     fn test_weak() {
         let obj = unsafe {
-            StrongPtr::new(msg_send![class!(NSObject), new])
+            StrongPtr::new(msg_send![class!(NSObject), new]).unwrap()
         };
         let weak = obj.weak();
 
-        let strong = weak.load();
+        let strong = weak.load().unwrap();
         assert!(*strong == *obj);
         drop(strong);
 
@@ -92,19 +92,19 @@ mod tests {
     #[test]
     fn test_weak_copy() {
         let obj = unsafe {
-            StrongPtr::new(msg_send![class!(NSObject), new])
+            StrongPtr::new(msg_send![class!(NSObject), new]).unwrap()
         };
         let weak = obj.weak();
 
         let weak2 = weak.clone();
-        let strong = weak2.load();
+        let strong = weak2.load().unwrap();
         assert!(*strong == *obj);
     }
 
     #[test]
     fn test_autorelease() {
         let obj = unsafe {
-            StrongPtr::new(msg_send![class!(NSObject), new])
+            StrongPtr::new(msg_send![class!(NSObject), new]).unwrap()
         };
 
         fn retain_count(obj: *mut Object) -> usize {
